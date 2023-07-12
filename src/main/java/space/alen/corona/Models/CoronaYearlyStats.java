@@ -3,6 +3,7 @@ package space.alen.corona.models;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Comparator;
+import space.alen.corona.models.CoronaMonthlyStats;
 
 public class CoronaYearlyStats
 {
@@ -32,9 +33,9 @@ public class CoronaYearlyStats
         return this.monthlyStats;
     }
 
-    public void addMonthlyStat(CoronaMonthlyStats monthlyStat)
+    public void addMonthlyStat(CoronaMonthlyStats newStats)
     {
-        this.monthlyStats.add(monthlyStat);
-        this.monthlyStat.sort(Comparator.comparing(CoronaMonthlyStats::month));
+        this.monthlyStats.add(newStats);
+        this.monthlyStats.sort(Comparator.comparing(CoronaMonthlyStats::month));
     }
 }

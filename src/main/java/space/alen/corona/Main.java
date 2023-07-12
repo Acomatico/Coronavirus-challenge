@@ -3,6 +3,9 @@ package space.alen.corona;
 import space.alen.corona.service.GetYearlyStatsService;
 import space.alen.corona.repositories.GetUSDataRepository;
 import space.alen.corona.repositories.CoronaRepositoryInterface;
+import space.alen.corona.models.CoronaMonthlyStats;
+import space.alen.corona.models.CoronaYearlyStats;
+import space.alen.corona.output.YearlyOutput;
 
 public class Main {
 
@@ -22,6 +25,10 @@ public class Main {
         }
 
         var service = new GetYearlyStatsService(new GetUSDataRepository());
-        service.execute(year);
+        CoronaYearlyStats yearlyStats = service.execute(year);
+
+        var output = new YearlyOutput();
+
+        output.output(yearlyStats);
     }
 }

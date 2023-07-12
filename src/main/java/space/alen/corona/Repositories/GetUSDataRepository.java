@@ -5,9 +5,11 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.io.IOException;
-import org.json.JSONObject;
+import java.util.HashMap;
 import java.lang.InterruptedException;
+import org.json.JSONObject;
 import space.alen.corona.models.CoronaYearlyStats;
+import space.alen.corona.models.CoronaMonthlyStats;
 
 public class GetUSDataRepository implements CoronaRepositoryInterface
 {
@@ -15,6 +17,8 @@ public class GetUSDataRepository implements CoronaRepositoryInterface
 
     public CoronaYearlyStats getStatsOfYear(String year)
     {
+        var stats = new CoronaYearlyStats("US", year);
+
         try {
             var client = HttpClient.newHttpClient();
 
@@ -23,80 +27,44 @@ public class GetUSDataRepository implements CoronaRepositoryInterface
 
             var rootJson = new JSONObject(response);
             var data = rootJson.getJSONArray("data");
-            var monthStatsMap = new Hashmap<String, MinMaxPair>();
+            var monthStatsMap = new HashMap<String, Integer>();
 
             for (int i = 0; i < data.length(); i++) {
                 var currentRow = data.getJSONObject(i);
 
-                var date = currentRow.getJSONObject("date");
-                var dateParts = date.Split("-");
+                var date = currentRow.getString("date");
+                var dateParts = date.split("-");
 
                 var curYear = dateParts[0];
                 var curMonth = dateParts[1];
                 var curDay = dateParts[2];
 
-                if (year != curYear) {
+                if (!year.equals(curYear)) {
                     continue;
                 }
 
-                int totalCases = Integer.parseInt(currentRow.getJSONObject("cases").getJSONObject("total").getJSONObject("value"));
-                
+                JSONObject cases = currentRow.getJSONObject("cases");
+                JSONObject total = cases.getJSONObject("total");
+                JSONObject calculated = total.getJSONObject("calculated");
+                int newCases = calculated.getInt("change_from_prior_day");
+
                 if (monthStatsMap.get(curMonth) == null) {
-                    monthStatsMap.put(new MinMaxPair(totalCases,totalCases));
-                    continue;
+                    monthStatsMap.put(curMonth, 0);
                 }
 
-                var curMinMaxPair = monthStatsMap.get(curMonth);
-
-                if (totalCases > curMinMaxPair.max()) {
-                    curMinMaxPair.setMax(totalCases);
-                }
-
-                if (totalCases < curMinMaxPair.min()) {
-                    curMinMaxPair.setMin(totalCases);
-                }
+                int curCases =  monthStatsMap.get(curMonth);
+                monthStatsMap.put(curMonth, curCases + newCases);
             }
 
             for (String key : monthStatsMap.keySet()) {
-                var minMaxPair = monthStatsMap.get(key);
+                var cases = monthStatsMap.get(key);
+                stats.addMonthlyStat(new CoronaMonthlyStats(key, cases));
             }
             
         } catch (IOException | InterruptedException exception) {
             System.out.println(exception);
         }
 
-        return new CoronaYearlyStats("US", year);
-    }
-
-    public static class MinMaxPair
-    {
-        private int min;
-        private int max;
-
-        private MinMaxPair(int min, int max)
-        {
-            this.min = min;
-            this.max = max;
-        }
-
-        public int min()
-        {
-
-        }
-
-        public void setMin(int min)
-        {
-            this.min = min;
-        }
-
-        public int max()
-        {
-            return this.max;
-        }
-
-        public void setMax(int max)
-        {
-            this.max = max;
-        }
+        return stats;
     }
 }
