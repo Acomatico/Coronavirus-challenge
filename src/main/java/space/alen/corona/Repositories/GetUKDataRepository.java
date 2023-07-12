@@ -7,24 +7,33 @@ import java.net.http.HttpResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.lang.InterruptedException;
+import java.util.zip.GZIPInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import org.json.JSONObject;
+import org.json.JSONArray;
 import space.alen.corona.models.CoronaYearlyStats;
 import space.alen.corona.models.CoronaMonthlyStats;
 
-public class GetUSDataRepository implements CoronaRepositoryInterface
+public class GetUKDataRepository implements CoronaRepositoryInterface
 {
-    private static final String URL = "https://api.covidtracking.com/v2/us/daily.json";
+    private static final String URL = "https://api.coronavirus.data.gov.uk/v1/data?filters=areaType=overview&areaName=United+Kingdom&structure=%7B%22date%22:%22date%22,%22newCasesByPublishDate%22:%22newCasesByPublishDate%22%7D";
 
     public CoronaYearlyStats getStatsOfYear(String year)
     {
-        var stats = new CoronaYearlyStats("US", year);
+        var yearlyStats = new CoronaYearlyStats("UK", year);
 
         try {
             var client = HttpClient.newHttpClient();
-            var request = HttpRequest.newBuilder().uri(URI.create(this.URL)).build();
-            var response = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+            var request = HttpRequest.newBuilder().uri(URI.create(this.URL)).header("Accept-Encoding", "gzip").build();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
 
-            var rootJson = new JSONObject(response);
+            InputStream responseStream = new ByteArrayInputStream(response.body());
+            responseStream = new GZIPInputStream(responseStream);
+            String body = new String(responseStream.readAllBytes(), StandardCharsets.UTF_8);
+            
+            var rootJson = new JSONObject(body);
             var data = rootJson.getJSONArray("data");
             var monthStatsMap = new HashMap<String, Integer>();
 
@@ -42,17 +51,14 @@ public class GetUSDataRepository implements CoronaRepositoryInterface
                     continue;
                 }
 
-                JSONObject cases = currentRow.getJSONObject("cases");
-                JSONObject total = cases.getJSONObject("total");
-                JSONObject calculated = total.getJSONObject("calculated");
-                int newCases = calculated.optInt("change_from_prior_day", 0);
+                int cases = currentRow.optInt("newCasesByPublishDate", 0);
 
                 if (monthStatsMap.get(curMonth) == null) {
                     monthStatsMap.put(curMonth, 0);
                 }
 
                 int curCases =  monthStatsMap.get(curMonth);
-                monthStatsMap.put(curMonth, curCases + newCases);
+                monthStatsMap.put(curMonth, curCases + cases);
             }
 
             for (int i = 1; i <= 12; i++) {
@@ -66,13 +72,13 @@ public class GetUSDataRepository implements CoronaRepositoryInterface
                     cases = 0;
                 }
 
-                stats.addMonthlyStat(new CoronaMonthlyStats(key, cases));
+                yearlyStats.addMonthlyStat(new CoronaMonthlyStats(key, cases));
             }
-            
+
         } catch (IOException | InterruptedException exception) {
             System.out.println(exception);
         }
 
-        return stats;
+        return yearlyStats;
     }
 }

@@ -6,18 +6,11 @@ import space.alen.corona.output.MonthlyOutput;
 
 public class YearlyOutput
 {
-    private MonthlyOutput monthlyStatsOutput;
-
-    public YearlyOutput()
+    public static void output(CoronaYearlyStats yearlyStats)
     {
-        this.monthlyStatsOutput = new MonthlyOutput();
-    }
-
-    public void output(CoronaYearlyStats yearlyStats)
-    {
-        System.out.println("Corona cases for the year: " + yearlyStats.year() + " by month");
+        System.out.println("Corona cases for " + yearlyStats.countryCode() + " on the year " + yearlyStats.year() + " by month");
         for (CoronaMonthlyStats monthlyStats : yearlyStats.monthlyStats()) {
-            this.monthlyStatsOutput.output(monthlyStats);
+            MonthlyOutput.output(monthlyStats);
         }
     }
 }
