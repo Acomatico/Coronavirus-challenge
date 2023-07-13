@@ -7,6 +7,7 @@ import space.alen.corona.repositories.CoronaRepositoryInterface;
 import space.alen.corona.models.CoronaMonthlyStats;
 import space.alen.corona.models.CoronaYearlyStats;
 import space.alen.corona.output.YearlyOutput;
+import space.alen.corona.output.YearlyGraphOutput;
 
 public class Main {
     public static void main(String[] args) {
@@ -27,5 +28,6 @@ public class Main {
         CoronaYearlyStats yearlyStats = service.execute(year);
 
         YearlyOutput.output(yearlyStats);
+        YearlyGraphOutput.output(yearlyStats);
     }
 }
