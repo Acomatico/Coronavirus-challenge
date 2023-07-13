@@ -68,5 +68,9 @@ would you rank the following software characteristics in order of importance (fr
 - 4 efficiency and performance: Can be higher if the particular application needs a very high performance, but I woulnt generaly put it higher
 - 5 compatibility and portability: This can also be higher on priority if the application is for the general public and uses different platforms, but for some others is not an issue, so I think its the least important one.
 
+### Submission details
 
-### Other infor
+This is quite literaly the first time I write something on Java, so I probably did a lot of small errors or chosing the wrong classes or methods.
+
+While the code works just fine, I think it could be improved, specially on the Repositoriy side as it could use a dedicated class to make API requests. I decided against it as it would need a lot of configuration as it would depend on which particular API are we using.
+
