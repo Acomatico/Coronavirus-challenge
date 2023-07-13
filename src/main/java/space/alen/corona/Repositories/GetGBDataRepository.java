@@ -16,13 +16,13 @@ import org.json.JSONArray;
 import space.alen.corona.models.CoronaYearlyStats;
 import space.alen.corona.models.CoronaMonthlyStats;
 
-public class GetUKDataRepository implements CoronaRepositoryInterface
+public class GetGBDataRepository implements CoronaRepositoryInterface
 {
     private static final String URL = "https://api.coronavirus.data.gov.uk/v1/data?filters=areaType=overview&areaName=United+Kingdom&structure=%7B%22date%22:%22date%22,%22newCasesByPublishDate%22:%22newCasesByPublishDate%22%7D";
 
     public CoronaYearlyStats getStatsOfYear(String year)
     {
-        var yearlyStats = new CoronaYearlyStats("UK", year);
+        var yearlyStats = new CoronaYearlyStats("GB", year);
 
         try {
             var client = HttpClient.newHttpClient();

@@ -59,3 +59,14 @@ would you rank the following software characteristics in order of importance (fr
 - reliability
 - compatibility and portability
 - correctness
+
+### Answers
+
+- 1 correctness: The most important feature, as software has to do what is supposed to.
+- 2 reliability: I think its the second most important, as users expect software to not fail.
+- 3 maintainability: Its important for any long-term project as it makes it easier to improve and update 
+- 4 efficiency and performance: Can be higher if the particular application needs a very high performance, but I woulnt generaly put it higher
+- 5 compatibility and portability: This can also be higher on priority if the application is for the general public and uses different platforms, but for some others is not an issue, so I think its the least important one.
+
+
+### Other infor

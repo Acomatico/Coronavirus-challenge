@@ -2,7 +2,7 @@ package space.alen.corona;
 
 import space.alen.corona.service.GetYearlyStatsService;
 import space.alen.corona.repositories.GetUSDataRepository;
-import space.alen.corona.repositories.GetUKDataRepository;
+import space.alen.corona.repositories.GetGBDataRepository;
 import space.alen.corona.repositories.CoronaRepositoryInterface;
 import space.alen.corona.models.CoronaMonthlyStats;
 import space.alen.corona.models.CoronaYearlyStats;
@@ -23,10 +23,10 @@ public class Main {
 
         if (country.equals("US")) {
             repository = new GetUSDataRepository();
-        } else if (country.equals("UK")) {
-            repository = new GetUKDataRepository();
+        } else if (country.equals("GB")) {
+            repository = new GetGBDataRepository();
         } else {
-            System.err.println("Only accepeted countries are US and UK");
+            System.err.println("Only accepeted countries are US and GB");
             System.exit(1);
         }
 
