@@ -23,6 +23,10 @@ public class YearlyGraphOutput
             }
         }
 
+        if (minValue == Integer.MAX_VALUE) {
+            minValue = 0;
+        }
+
         int width = 180;
         int height = 50;
         int range = maxValue - minValue;
