@@ -38,7 +38,7 @@ public class YearlyGraphOutput
 
                 int cases = yearlyStats.monthlyStats().get(month).cases();
                 
-                if (cases >= i * heightRatio) {
+                if (cases > i * heightRatio) {
                     matrix[i][j] = '▇';
                 } else {
                     matrix[i][j] = ' ';

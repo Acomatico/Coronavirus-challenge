@@ -28,6 +28,13 @@ public class GetUKDataRepository implements CoronaRepositoryInterface
             var client = HttpClient.newHttpClient();
             var request = HttpRequest.newBuilder().uri(URI.create(this.URL)).header("Accept-Encoding", "gzip").build();
             var response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+            var statusCode = response.statusCode();
+
+            System.out.println(statusCode);
+            if (200 != statusCode) {
+                System.err.println("There was some error on the request. Status code: " + statusCode);
+                System.exit(1);
+            }
 
             InputStream responseStream = new ByteArrayInputStream(response.body());
             responseStream = new GZIPInputStream(responseStream);
@@ -76,7 +83,9 @@ public class GetUKDataRepository implements CoronaRepositoryInterface
             }
 
         } catch (IOException | InterruptedException exception) {
-            System.out.println(exception);
+            System.out.println("Some error ocurred while sending or proccessing the request.");
+            exception.printStackTrace();
+            System.exit(1);
         }
 
         return yearlyStats;

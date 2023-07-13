@@ -22,9 +22,15 @@ public class GetUSDataRepository implements CoronaRepositoryInterface
         try {
             var client = HttpClient.newHttpClient();
             var request = HttpRequest.newBuilder().uri(URI.create(this.URL)).build();
-            var response = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            var statusCode = response.statusCode();
 
-            var rootJson = new JSONObject(response);
+            if (200 != statusCode) {
+                System.err.println("There was some error on the request. Status code: " + statusCode);
+                System.exit(1);
+            }
+
+            var rootJson = new JSONObject(response.body());
             var data = rootJson.getJSONArray("data");
             var monthStatsMap = new HashMap<String, Integer>();
 
