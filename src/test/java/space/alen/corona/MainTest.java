@@ -1,4 +1,4 @@
-package space.alen.corona;
+package test.space.alen.corona;
 
 import org.junit.jupiter.api.Test;
 
